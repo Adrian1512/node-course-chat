@@ -9,16 +9,21 @@ let server = http.createServer(app);
 let io = socketIO(server);
 app.use(express.static(publicPath));
 
+let {generateMessage} =  require('./utils/message');
+
 io.on('connection' , (socket) => {
     console.log('New user Conected');
 
-    socket.emit('newMessage', {
-        from: 'mike@example.com',
-        text: 'Hey, What is going on',
-        createdAt: 23
-    });
-    socket.on('createMessage', (newEmail) => {
-        console.log('createMessage', newEmail);
+
+    socket.emit('newMessage', generateMessage('Admin', 'Werlcome to chat app'));
+    socket.broadcast.emit('newMessage',generateMessage('Admin', 'A new user has join'))
+    socket.on('createMessage', (message) => {
+        console.log('createMessage', message);
+        // io.emit('newMessage', {
+
+
+        // })
+        socket.broadcast.emit('newMessage',generateMessage(message.from, message.text))
     })
     socket.on('disconnect', () => {
         console.log('User disconnected from server');
