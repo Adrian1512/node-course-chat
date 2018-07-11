@@ -17,14 +17,14 @@ io.on('connection' , (socket) => {
 
     socket.emit('newMessage', generateMessage('Admin', 'Werlcome to chat app'));
     socket.broadcast.emit('newMessage',generateMessage('Admin', 'A new user has join'))
-    socket.on('createMessage', (message) => {
-        console.log('createMessage', message);
-        // io.emit('newMessage', {
+    socket.on('createMessage', (mensaje, callback) => {
 
-
-        // })
-        socket.broadcast.emit('newMessage',generateMessage(message.from, message.text))
-    })
+        console.log('createMessage', mensaje);
+        
+        io.emit('newMessage', generateMessage(mensaje.from, mensaje.text));
+        if (callback) callback('this is from the server');
+        
+    });
     socket.on('disconnect', () => {
         console.log('User disconnected from server');
     });
